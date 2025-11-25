@@ -59,11 +59,20 @@ class Tetris {
         this.nextCanvas = document.getElementById('nextCanvas');
         this.nextCtx = this.nextCanvas.getContext('2d');
         
+        // Dynamické nastavení velikosti canvasu podle dostupného prostoru
+        this.calculateCanvasSize();
+        
         // Nastavení velikosti canvasu
-        this.canvas.width = COLS * BLOCK_SIZE;
-        this.canvas.height = ROWS * BLOCK_SIZE;
-        this.nextCanvas.width = 4 * BLOCK_SIZE;
-        this.nextCanvas.height = 4 * BLOCK_SIZE;
+        this.canvas.width = COLS * this.blockSize;
+        this.canvas.height = ROWS * this.blockSize;
+        this.nextCanvas.width = 4 * this.blockSize;
+        this.nextCanvas.height = 4 * this.blockSize;
+        
+        // Nastavení CSS velikosti pro správné zobrazení
+        this.canvas.style.width = (COLS * this.blockSize) + 'px';
+        this.canvas.style.height = (ROWS * this.blockSize) + 'px';
+        this.nextCanvas.style.width = (4 * this.blockSize) + 'px';
+        this.nextCanvas.style.height = (4 * this.blockSize) + 'px';
         
         this.board = this.createBoard();
         this.piece = null;
@@ -78,6 +87,40 @@ class Tetris {
         this.gameOver = false;
         
         this.init();
+    }
+    
+    calculateCanvasSize() {
+        // Získání dostupného prostoru
+        const gameArea = this.canvas.parentElement;
+        const sideInfoWidth = 70; // šířka side-info
+        const availableWidth = gameArea.clientWidth - sideInfoWidth - 20; // odečtení side-info a padding
+        const availableHeight = window.innerHeight - 200; // odečtení header, controls, atd.
+        
+        // Výpočet optimální velikosti bloku
+        const maxBlockSizeByWidth = Math.floor(availableWidth / COLS);
+        const maxBlockSizeByHeight = Math.floor(availableHeight / ROWS);
+        
+        // Použijeme menší hodnotu, aby se vše vešlo
+        this.blockSize = Math.min(maxBlockSizeByWidth, maxBlockSizeByHeight, BLOCK_SIZE);
+        
+        // Minimální velikost pro hratelnost
+        if (this.blockSize < 12) {
+            this.blockSize = 12;
+        }
+    }
+    
+    resize() {
+        this.calculateCanvasSize();
+        this.canvas.width = COLS * this.blockSize;
+        this.canvas.height = ROWS * this.blockSize;
+        this.nextCanvas.width = 4 * this.blockSize;
+        this.nextCanvas.height = 4 * this.blockSize;
+        this.canvas.style.width = (COLS * this.blockSize) + 'px';
+        this.canvas.style.height = (ROWS * this.blockSize) + 'px';
+        this.nextCanvas.style.width = (4 * this.blockSize) + 'px';
+        this.nextCanvas.style.height = (4 * this.blockSize) + 'px';
+        this.draw();
+        this.drawNext();
     }
     
     createBoard() {
@@ -259,9 +302,9 @@ class Tetris {
             for (let x = 0; x < COLS; x++) {
                 if (this.board[y][x] !== 0) {
                     this.ctx.fillStyle = COLORS[this.board[y][x]];
-                    this.ctx.fillRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+                    this.ctx.fillRect(x * this.blockSize, y * this.blockSize, this.blockSize, this.blockSize);
                     this.ctx.strokeStyle = '#fff';
-            this.ctx.strokeRect(x * BLOCK_SIZE, y * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+            this.ctx.strokeRect(x * this.blockSize, y * this.blockSize, this.blockSize, this.blockSize);
                 }
             }
         }
@@ -271,12 +314,12 @@ class Tetris {
             for (let y = 0; y < this.piece.matrix.length; y++) {
                 for (let x = 0; x < this.piece.matrix[y].length; x++) {
                     if (this.piece.matrix[y][x] !== 0) {
-                        const drawX = (this.piece.pos.x + x) * BLOCK_SIZE;
-                        const drawY = (this.piece.pos.y + y) * BLOCK_SIZE;
+                        const drawX = (this.piece.pos.x + x) * this.blockSize;
+                        const drawY = (this.piece.pos.y + y) * this.blockSize;
                         this.ctx.fillStyle = COLORS[this.piece.matrix[y][x]];
-                        this.ctx.fillRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
+                        this.ctx.fillRect(drawX, drawY, this.blockSize, this.blockSize);
                         this.ctx.strokeStyle = '#fff';
-                        this.ctx.strokeRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
+                        this.ctx.strokeRect(drawX, drawY, this.blockSize, this.blockSize);
                     }
                 }
             }
@@ -294,12 +337,12 @@ class Tetris {
             for (let y = 0; y < this.nextPiece.matrix.length; y++) {
                 for (let x = 0; x < this.nextPiece.matrix[y].length; x++) {
                     if (this.nextPiece.matrix[y][x] !== 0) {
-                        const drawX = (offsetX + x) * BLOCK_SIZE;
-                        const drawY = (offsetY + y) * BLOCK_SIZE;
+                        const drawX = (offsetX + x) * this.blockSize;
+                        const drawY = (offsetY + y) * this.blockSize;
                         this.nextCtx.fillStyle = COLORS[this.nextPiece.matrix[y][x]];
-                        this.nextCtx.fillRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
+                        this.nextCtx.fillRect(drawX, drawY, this.blockSize, this.blockSize);
                         this.nextCtx.strokeStyle = '#fff';
-                        this.nextCtx.strokeRect(drawX, drawY, BLOCK_SIZE, BLOCK_SIZE);
+                        this.nextCtx.strokeRect(drawX, drawY, this.blockSize, this.blockSize);
                     }
                 }
             }
@@ -481,6 +524,22 @@ document.addEventListener('touchend', (e) => {
         }
     }
 }, { passive: true });
+
+// Resize handler
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        game.resize();
+    }, 100);
+});
+
+// Resize při načtení stránky (pro správné zobrazení na mobilu)
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        game.resize();
+    }, 100);
+});
 
 // Herní smyčka
 function gameLoop(time) {

@@ -10,40 +10,44 @@
 <body>
     <div class="container">
         <div class="game-wrapper">
-            <div class="header">
+            <div class="top-bar">
                 <h1>TETRIS</h1>
                 <div class="score-board">
                     <div class="score-item">
-                        <span class="label">Skóre:</span>
+                        <span class="label">Skóre</span>
                         <span id="score">0</span>
                     </div>
                     <div class="score-item">
-                        <span class="label">Řádky:</span>
+                        <span class="label">Řádky</span>
                         <span id="lines">0</span>
                     </div>
                     <div class="score-item">
-                        <span class="label">Úroveň:</span>
+                        <span class="label">Úroveň</span>
                         <span id="level">1</span>
                     </div>
                 </div>
             </div>
             
-            <div class="game-area">
-                <canvas id="gameCanvas"></canvas>
-                <div id="gameOver" class="game-over hidden">
-                    <h2>Konec hry!</h2>
-                    <p>Finální skóre: <span id="finalScore">0</span></p>
-                    <button id="restartBtn" class="btn">Znovu</button>
+            <div class="game-layout">
+                <div class="game-area">
+                    <canvas id="gameCanvas"></canvas>
+                    <div id="gameOver" class="game-over hidden">
+                        <h2>Konec hry!</h2>
+                        <p>Finální skóre: <span id="finalScore">0</span></p>
+                        <button id="restartBtn" class="btn">Znovu</button>
+                    </div>
+                    <div id="pauseScreen" class="pause-screen hidden">
+                        <h2>Pauza</h2>
+                        <button id="resumeBtn" class="btn">Pokračovat</button>
+                    </div>
                 </div>
-                <div id="pauseScreen" class="pause-screen hidden">
-                    <h2>Pauza</h2>
-                    <button id="resumeBtn" class="btn">Pokračovat</button>
+                
+                <div class="side-info">
+                    <div class="next-piece">
+                        <div class="label">Další:</div>
+                        <canvas id="nextCanvas"></canvas>
+                    </div>
                 </div>
-            </div>
-            
-            <div class="next-piece">
-                <div class="label">Další:</div>
-                <canvas id="nextCanvas"></canvas>
             </div>
             
             <div class="controls">
