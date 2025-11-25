@@ -173,46 +173,83 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    border-radius: 15px;
-    font-size: 1.5em;
+    border-radius: 20px;
     font-weight: bold;
     cursor: pointer;
-    transition: transform 0.1s, opacity 0.1s;
+    transition: transform 0.1s, opacity 0.1s, box-shadow 0.1s;
     touch-action: manipulation;
     user-select: none;
     -webkit-user-select: none;
-    min-width: 60px;
-    min-height: 60px;
+    min-width: 80px;
+    min-height: 80px;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    gap: 5px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    padding: 10px;
 }
 
 .control-btn:active {
-    transform: scale(0.9);
-    opacity: 0.8;
+    transform: scale(0.92);
+    opacity: 0.85;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.control-btn .btn-icon {
+    font-size: 2em;
+    line-height: 1;
+}
+
+.control-btn .btn-label {
+    font-size: 0.75em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .control-btn.rotate {
     background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    min-width: 140px;
 }
 
 .control-btn.pause {
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    min-width: 120px;
+    min-width: 180px;
 }
 
 /* Touch-friendly controls for mobile */
 @media (max-width: 600px) {
     .control-btn {
-        min-width: 70px;
-        min-height: 70px;
-        font-size: 1.8em;
+        min-width: 100px;
+        min-height: 100px;
+        padding: 12px;
+        gap: 6px;
+    }
+    
+    .control-btn .btn-icon {
+        font-size: 2.5em;
+    }
+    
+    .control-btn .btn-label {
+        font-size: 0.85em;
+    }
+    
+    .control-btn.rotate {
+        min-width: 160px;
     }
     
     .control-btn.pause {
-        min-width: 150px;
+        min-width: 200px;
+    }
+    
+    .control-row {
+        gap: 12px;
+    }
+    
+    .controls {
+        gap: 12px;
     }
     
     .header h1 {
