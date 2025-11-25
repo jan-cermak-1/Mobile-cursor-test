@@ -1,0 +1,38 @@
+name: Setup GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["Deploy to GitHub Pages"]
+    types:
+      - completed
+    branches:
+      - main
+
+jobs:
+  setup-pages:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup GitHub Pages
+        uses: actions/github-script@v7
+        with:
+          script: |
+            try {
+              await github.rest.repos.createPagesSite({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                source: {
+                  branch: 'gh-pages',
+                  path: '/'
+                }
+              });
+              console.log('GitHub Pages activated successfully!');
+            } catch (error) {
+              if (error.status === 409) {
+                console.log('GitHub Pages is already enabled');
+              } else if (error.status === 422) {
+                console.log('GitHub Pages source already configured');
+              } else {
+                console.log('Error:', error.message);
+              }
+            }
