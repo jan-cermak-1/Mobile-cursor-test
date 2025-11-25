@@ -12,9 +12,10 @@ body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     padding: 10px;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .container {
@@ -22,7 +23,8 @@ body {
     max-width: 500px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
+    margin: 0 auto;
 }
 
 .game-wrapper {
@@ -31,6 +33,7 @@ body {
     padding: 15px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     width: 100%;
+    margin: 10px 0;
 }
 
 .header {
@@ -161,6 +164,8 @@ body {
     flex-direction: column;
     gap: 10px;
     align-items: center;
+    margin-top: 10px;
+    padding-bottom: 10px;
 }
 
 .control-row {
