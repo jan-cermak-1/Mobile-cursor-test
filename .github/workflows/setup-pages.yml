@@ -1,37 +1,45 @@
 name: Setup GitHub Pages
 
 on:
-  workflow_run:
-    workflows: ["Deploy to GitHub Pages"]
-    types:
-      - completed
+  push:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   setup-pages:
-    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
       - name: Setup GitHub Pages
         uses: actions/github-script@v7
         with:
           script: |
             try {
-              await github.rest.repos.createPagesSite({
+              const response = await github.rest.repos.getPages({
                 owner: context.repo.owner,
-                repo: context.repo.repo,
-                source: {
-                  branch: 'gh-pages',
-                  path: '/'
-                }
+                repo: context.repo.repo
               });
-              console.log('GitHub Pages activated successfully!');
+              console.log('GitHub Pages is already enabled');
             } catch (error) {
-              if (error.status === 409) {
-                console.log('GitHub Pages is already enabled');
-              } else if (error.status === 422) {
-                console.log('GitHub Pages source already configured');
+              if (error.status === 404) {
+                console.log('Activating GitHub Pages...');
+                await github.rest.repos.createPagesSite({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  source: {
+                    branch: 'gh-pages',
+                    path: '/'
+                  }
+                });
+                console.log('GitHub Pages activated successfully!');
               } else {
                 console.log('Error:', error.message);
               }
